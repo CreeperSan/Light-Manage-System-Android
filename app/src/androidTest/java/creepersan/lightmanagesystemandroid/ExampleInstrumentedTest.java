@@ -1,4 +1,4 @@
-package creepersan.smartlight;
+package creepersan.lightmanagesystemandroid;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("creepersan.smartlight", appContext.getPackageName());
+        assertEquals("creepersan.lightmanagesystemandroid", appContext.getPackageName());
     }
 }

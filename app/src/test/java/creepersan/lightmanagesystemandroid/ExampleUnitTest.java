@@ -1,4 +1,4 @@
-package creepersan.smartlight;
+package creepersan.lightmanagesystemandroid;
 
 import org.junit.Test;
 
