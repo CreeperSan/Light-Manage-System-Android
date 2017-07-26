@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:icon="@drawable/ic_home_black"
+        android:id="@+id/menuControlBottomIndex"
+        android:title="首页"/>
+    <item
+        android:icon="@drawable/ic_extension_black"
+        android:id="@+id/menuControlBottomDevice"
+        android:title="设备"/>
+    <item
+        android:icon="@drawable/ic_place_black"
+        android:id="@+id/menuControlBottomArea"
+        android:title="区域"/>
+</menu>

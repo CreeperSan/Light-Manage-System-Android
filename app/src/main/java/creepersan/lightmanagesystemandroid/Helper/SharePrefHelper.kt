@@ -12,19 +12,19 @@ class SharePrefHelper private constructor(context: Context) {
         return accountPref!!.getString(ACCOUNT_KEY_USERNAME,"")
     }
     fun setAccountUserName(userName:String){
-
+        accountPref!!.edit().putString(ACCOUNT_KEY_USERNAME,userName).commit()
     }
     fun getAccountPassword():String{
         return accountPref!!.getString(ACCOUNT_KEY_PASSWORD,"")
     }
     fun setAccountPassword(password:String){
-
+        accountPref!!.edit().putString(ACCOUNT_KEY_PASSWORD,password).commit()
     }
     fun getAccountRememberState():Boolean{
         return accountPref!!.getBoolean(ACCOUNT_KEY_REMEMBER_STATE,false)
     }
     fun setAccountRememberState(state:Boolean){
-
+        accountPref!!.edit().putBoolean(ACCOUNT_KEY_REMEMBER_STATE,state).commit()
     }
 
 

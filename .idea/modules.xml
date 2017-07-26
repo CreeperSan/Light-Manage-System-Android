@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Light-Manage-System-Android.iml" filepath="$PROJECT_DIR$/Light-Manage-System-Android.iml" />
-      <module fileurl="file://$PROJECT_DIR$/LightManageSystemAndroid.iml" filepath="$PROJECT_DIR$/LightManageSystemAndroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

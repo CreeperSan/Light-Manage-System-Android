@@ -1,28 +1,36 @@
 package creepersan.lightmanagesystemandroid.Base
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import android.support.annotation.LayoutRes
+import android.support.v4.app.Fragment
 import android.util.Log
-import android.widget.ImageView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import butterknife.BindView
 import butterknife.ButterKnife
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
-abstract class BaseActivity:AppCompatActivity(){
-
+abstract class BaseFragment:Fragment(){
     private var TAG = javaClass.simpleName
     get set
-    protected val context:Context = this
+    private lateinit var rootView:View
+
+    protected abstract fun getLayoutID():Int;
+
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        rootView = activity.layoutInflater.inflate(getLayoutID(),container,false)
+        ButterKnife.bind(this,rootView)
+        onViewInflated()
+        return rootView
+    }
+
+    protected open fun onViewInflated(){}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(getLayoutID())
         EventBus.getDefault().register(this)
-        ButterKnife.bind(this)
     }
 
     override fun onDestroy() {
@@ -30,10 +38,9 @@ abstract class BaseActivity:AppCompatActivity(){
         EventBus.getDefault().unregister(this)
     }
 
-    protected abstract fun getLayoutID():Int;
 
     /**
-     *      调试方法
+     *      调试
      */
     protected fun log(content:String){
         Log.i(TAG,content)
@@ -50,24 +57,11 @@ abstract class BaseActivity:AppCompatActivity(){
     protected fun loge(content:String){
         Log.e(TAG,content)
     }
-    protected fun toast(content:String){
-        Toast.makeText(context,content,Toast.LENGTH_SHORT).show()
+    protected fun toast(content: String){
+        Toast.makeText(activity,content,Toast.LENGTH_SHORT).show()
     }
-    protected fun toastLong(content:String){
-        Toast.makeText(context,content,Toast.LENGTH_LONG).show()
-    }
-
-    /**
-     *      开启新的Activity
-     */
-
-    protected fun <T> startActivity(cls:Class<T>,isFinish:Boolean){
-        val intent = Intent(this,cls)
-        startActivity(intent)
-        if (isFinish) finish()
-    }
-    protected fun <T> startActivity(cls:Class<T>){
-        startActivity(cls,false)
+    protected fun toastLong(content: String){
+        Toast.makeText(activity,content,Toast.LENGTH_LONG).show()
     }
 
     /**
@@ -75,5 +69,4 @@ abstract class BaseActivity:AppCompatActivity(){
      */
     @Subscribe
     fun onStringCmdEvent(command:String){}
-
 }
