@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:paddingEnd="16dp"
     android:paddingStart="16dp"
     android:layout_width="match_parent"
@@ -7,6 +8,7 @@
 
 
     <ImageView
+        tools:src="@drawable/ic_status_online"
         android:id="@+id/componentCardStatusImage"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
@@ -22,7 +24,7 @@
         android:layout_height="wrap_content">
         <TextView
             android:id="@+id/componentCardStatusTitle"
-            android:text="客厅大灯"
+            tools:text="客厅大灯"
             android:textColor="#000000"
             android:textSize="14sp"
             android:layout_width="wrap_content"
@@ -30,7 +32,7 @@
         <TextView
             android:id="@+id/componentCardStatusSubTitle"
             android:layout_marginTop="4dp"
-            android:text="SL_M_5 ( 控制设备 )"
+            tools:text="SL_M_5 ( 控制设备 )"
             android:textSize="12sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

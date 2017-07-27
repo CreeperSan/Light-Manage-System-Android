@@ -14,4 +14,14 @@ class CardStatusComponent(context: Context) :BaseComponent(context){
 
     override fun getLayoutID(): Int = R.layout.compoment_card_status
 
+    fun setTitleText(title:String){
+        titleText.text = title
+    }
+    fun setSubTitleText(subTitle:String){
+        subTitleText.text = subTitle
+    }
+    fun setStatusImageRes(resID:Int){
+        statusImage.setImageResource(resID)
+    }
+
 }

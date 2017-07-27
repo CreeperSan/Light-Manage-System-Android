@@ -14,6 +14,7 @@ import creepersan.lightmanagesystemandroid.Helper.SharePrefHelper
 import creepersan.lightmanagesystemandroid.Service.InfoService
 import creepersan.lightmanagesystemandroid.Service.NetworkService
 import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 
 class LoginActivity :BaseActivity(){
@@ -79,7 +80,7 @@ class LoginActivity :BaseActivity(){
         }
     }
 
-    @Subscribe()
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onLoginResultEvent(event:LoginResultEvent){
         if (event.isConnected){
             if (event.isSuccess){
