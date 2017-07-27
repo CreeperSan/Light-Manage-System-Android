@@ -2,14 +2,16 @@ package creepersan.lightmanagesystemandroid.Base
 
 import android.app.Service
 import android.content.Intent
+import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
-class BaseService:Service(){
+open class BaseService:Service(){
     private var TAG = javaClass.simpleName
     get set
+    private val handler = Handler()
 
     override fun onCreate() {
         super.onCreate()
@@ -42,5 +44,12 @@ class BaseService:Service(){
 
     @Subscribe
     fun onStringCmdEvent(command:String){}
-
+    fun postEvent(event:Any){
+        EventBus.getDefault().post(event)
+    }
+    fun postEventDelay(event: Any,delay:Long){
+        handler.postDelayed({
+            postEvent(event)
+        },delay)
+    }
 }

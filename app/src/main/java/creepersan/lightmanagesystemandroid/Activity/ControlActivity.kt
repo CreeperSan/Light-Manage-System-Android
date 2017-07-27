@@ -1,10 +1,13 @@
 package creepersan.lightmanagesystemandroid.Activity
 
+import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.widget.LinearLayout
 import butterknife.BindView
 import creepersan.lightmanagesystemandroid.Base.BaseActivity
+import creepersan.lightmanagesystemandroid.Event.GetAreaListEvent
+import creepersan.lightmanagesystemandroid.Event.GetDeviceListEvent
 import creepersan.lightmanagesystemandroid.Fragment.AreaFragment
 import creepersan.lightmanagesystemandroid.Fragment.DeviceFragment
 import creepersan.lightmanagesystemandroid.Fragment.IndexFragment
@@ -78,6 +81,9 @@ class ControlActivity:BaseActivity(){
     }
     private fun initFinal() {
         navigationView.bringToFront()
+        //发送请求
+        postEvent(GetDeviceListEvent(true))
+        postEvent(GetAreaListEvent(true))
     }
 
     /**

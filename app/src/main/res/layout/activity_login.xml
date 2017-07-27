@@ -21,6 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
+            android:layout_marginBottom="8dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -85,10 +86,15 @@
             </RelativeLayout>
             <Button
                 android:id="@+id/loginLogin"
-                android:layout_marginBottom="8dp"
                 android:layout_gravity="center"
                 android:text="登陆"
                 android:layout_width="150dp"
+                android:layout_height="wrap_content" />
+            <ProgressBar
+                android:visibility="gone"
+                android:id="@+id/loginProgressBar"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
     </android.support.v7.widget.CardView>

@@ -8,25 +8,20 @@ import creepersan.lightmanagesystemandroid.Activity.R
 import creepersan.lightmanagesystemandroid.Base.BaseComponent
 
 class CardItemComponent(context: Context):BaseComponent(context){
-    @BindView(R.id.cardItemComponentTitle)lateinit var titleText:TextView
-    @BindView(R.id.cardItemComponentSubTitle)lateinit var subTitleText:TextView
+    @BindView(R.id.cardItemComponentTitle)lateinit var titleTextView:TextView
+    @BindView(R.id.cardItemComponentSubTitle)lateinit var subTitleTextView:TextView
     @BindView(R.id.cardItemComponentSwitch)lateinit var statusSwitch:Switch
 
     override fun getLayoutID(): Int = R.layout.component_card_item
 
-    fun setTitleText(content:String){
-        titleText.text = content
+    fun setTitle(title:String){
+        titleTextView.text = title
     }
-
-    fun setSubTitleText(content: String){
-        subTitleText.text = content
+    fun setSubTitle(subTitle:String){
+        subTitleTextView.text = subTitle
     }
-
-    fun setSwitchStatus(status:Boolean){
+    fun setSwitch(status:Boolean){
         statusSwitch.isChecked = status
     }
 
-    fun getSwitchStatus():Boolean{
-        return statusSwitch.isChecked
-    }
 }

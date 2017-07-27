@@ -69,4 +69,7 @@ abstract class BaseFragment:Fragment(){
      */
     @Subscribe
     fun onStringCmdEvent(command:String){}
+    fun postEvent(event:Any){
+        EventBus.getDefault().post(event)
+    }
 }

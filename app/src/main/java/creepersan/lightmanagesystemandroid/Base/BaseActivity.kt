@@ -69,11 +69,17 @@ abstract class BaseActivity:AppCompatActivity(){
     protected fun <T> startActivity(cls:Class<T>){
         startActivity(cls,false)
     }
+    protected fun <T> startService(clazz: Class<T>){
+        startService(Intent(this,clazz))
+    }
 
     /**
      *      EventBus
      */
     @Subscribe
     fun onStringCmdEvent(command:String){}
+    fun postEvent(event:Any){
+        EventBus.getDefault().post(event)
+    }
 
 }

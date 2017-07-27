@@ -2,6 +2,7 @@ package creepersan.lightmanagesystemandroid.Base
 
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.support.annotation.ColorInt
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.widget.SwipeRefreshLayout
 import android.view.LayoutInflater
@@ -48,13 +49,13 @@ abstract class BaseCardFragment:BaseFragment(){
         linearLayout.removeAllViews()
     }
 
-    protected fun hideFloatingButton(){
+    fun hideFloatingButton(){
         floatingButton.visibility = View.GONE
     }
-    protected fun showFloatingButton(){
+    fun showFloatingButton(){
         floatingButton.visibility = View.VISIBLE
     }
-    protected fun setFloatingActionOnClickListener(listener:View.OnClickListener){
+    fun setFloatingActionOnClickListener(listener:View.OnClickListener){
         floatingButton.setOnClickListener(listener)
     }
 
@@ -71,5 +72,15 @@ abstract class BaseCardFragment:BaseFragment(){
         dialogBuilder.setNegativeButton("取消",null)
         dialogBuilder.setPositiveButton("确定", DialogInterface.OnClickListener { dialogInterface, i -> runnable.run() })
         dialogBuilder.show()
+    }
+
+    fun setRefreshing(status:Boolean){
+        swipeRefreshLayout.isRefreshing = status
+    }
+    fun setRefreshListener(listener:SwipeRefreshLayout.OnRefreshListener){
+        swipeRefreshLayout.setOnRefreshListener(listener)
+    }
+    fun setRefreshColor(vararg colors: Int){
+        swipeRefreshLayout.setColorSchemeColors(*colors)
     }
 }

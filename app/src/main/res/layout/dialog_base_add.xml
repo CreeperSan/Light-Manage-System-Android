@@ -12,7 +12,7 @@
         <ImageView
             android:id="@+id/dialogBaseAddBackground"
             android:scaleType="centerCrop"
-            tools:src="@drawable/background_dialog_add_area"
+            tools:src="@drawable/background_dialog_add_device"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
         <TextView
