@@ -3,7 +3,9 @@ package creepersan.lightmanagesystemandroid.Helper
 object UrlHelper {
 
     fun getLoginUrl(userName:String,password:String):String{
-        return "http://192.168.1.248/cgi-bin/login_post.cgi?userName=${userName}&userPassword=${password}"
+//        return "http://192.168.1.248/cgi-bin/login_post.cgi?userName=${userName}&userPassword=${password}"
+        return "http://192.168.1.248/cgi-bin/login_post.cgi?userName=admin&userPassword=123456"
+//        return "https://www.baidu.com/"
     }
 
     /**

@@ -1,16 +1,16 @@
 package creepersan.lightmanagesystemandroid.Fragment
 
 import android.graphics.Color
+import android.support.v4.widget.SwipeRefreshLayout
 import creepersan.lightmanagesystemandroid.Activity.R
 import creepersan.lightmanagesystemandroid.Base.BaseCardFragment
 import creepersan.lightmanagesystemandroid.Base.BaseFragment
 import creepersan.lightmanagesystemandroid.Component.CardComponent
 import creepersan.lightmanagesystemandroid.Component.CardStatusComponent
-import creepersan.lightmanagesystemandroid.Event.GetAreaListEvent
-import creepersan.lightmanagesystemandroid.Event.GetAreaListResultEvent
-import creepersan.lightmanagesystemandroid.Event.GetDeviceListResultEvent
+import creepersan.lightmanagesystemandroid.Event.*
 import creepersan.lightmanagesystemandroid.Item.Area
 import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class IndexFragment :BaseCardFragment(){
     private lateinit var areaStateCard:CardComponent
@@ -35,6 +35,10 @@ class IndexFragment :BaseCardFragment(){
     private fun initSwipeRefreshLayout(){
         setRefreshing(true)
         setRefreshColor(Color.parseColor("#E51C23"))
+        setRefreshListener(SwipeRefreshLayout.OnRefreshListener {
+            postEvent(GetDeviceListEvent(true))
+            postEvent(GetAreaListEvent(true))
+        })
     }
 
     @Subscribe()

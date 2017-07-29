@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import butterknife.BindView
 import butterknife.ButterKnife
+import creepersan.lightmanagesystemandroid.Helper.CommandHelper
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
@@ -77,7 +78,11 @@ abstract class BaseActivity:AppCompatActivity(){
      *      EventBus
      */
     @Subscribe
-    fun onStringCmdEvent(command:String){}
+    fun onStringCmdEvent(command:String){
+        if (command == CommandHelper.EXIT){
+            finish()
+        }
+    }
     fun postEvent(event:Any){
         EventBus.getDefault().post(event)
     }

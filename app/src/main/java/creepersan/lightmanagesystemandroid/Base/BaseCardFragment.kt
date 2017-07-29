@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import butterknife.BindView
+import com.bumptech.glide.Glide
 import creepersan.lightmanagesystemandroid.Activity.R
 
 abstract class BaseCardFragment:BaseFragment(){
@@ -66,7 +67,7 @@ abstract class BaseCardFragment:BaseFragment(){
         val dialogViewGroup = baseView.findViewById<LinearLayout>(R.id.dialogBaseAddViewGroup)
         val dialogTitle = baseView.findViewById<TextView>(R.id.dialogBaseAddTitle)
         dialogTitle.text = title
-        dialogBackground.setImageResource(backgroundImgID)
+        Glide.with(activity).load(backgroundImgID).into(dialogBackground)
         dialogViewGroup.addView(view)
         dialogBuilder.setView(baseView)
         dialogBuilder.setNegativeButton("取消",null)
@@ -83,4 +84,5 @@ abstract class BaseCardFragment:BaseFragment(){
     fun setRefreshColor(vararg colors: Int){
         swipeRefreshLayout.setColorSchemeColors(*colors)
     }
+
 }

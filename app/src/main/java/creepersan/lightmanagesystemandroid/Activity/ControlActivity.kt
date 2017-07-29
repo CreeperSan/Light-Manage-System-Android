@@ -1,8 +1,13 @@
 package creepersan.lightmanagesystemandroid.Activity
 
-import android.graphics.Color
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
+import android.view.Menu
+import android.view.MenuItem
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import butterknife.BindView
 import creepersan.lightmanagesystemandroid.Base.BaseActivity
@@ -11,6 +16,7 @@ import creepersan.lightmanagesystemandroid.Event.GetDeviceListEvent
 import creepersan.lightmanagesystemandroid.Fragment.AreaFragment
 import creepersan.lightmanagesystemandroid.Fragment.DeviceFragment
 import creepersan.lightmanagesystemandroid.Fragment.IndexFragment
+import creepersan.lightmanagesystemandroid.Helper.CommandHelper
 
 class ControlActivity:BaseActivity(){
     @BindView(R.id.controlBottomNavigationView)lateinit var navigationView:BottomNavigationView
@@ -20,16 +26,19 @@ class ControlActivity:BaseActivity(){
     private lateinit var indexFragment:IndexFragment
     private lateinit var deviceFragment:DeviceFragment
     private lateinit var areaFragment:AreaFragment
+    private lateinit var fragmentSwitchAnimation:Animation
 
     override fun getLayoutID(): Int = R.layout.activity_control
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initFragment()
+        initAnimation()
         initBottomNavigationView()
         initFragmentLayout()
         initFinal()
     }
+
 
 
 
@@ -40,6 +49,9 @@ class ControlActivity:BaseActivity(){
         indexFragment = IndexFragment()
         deviceFragment = DeviceFragment()
         areaFragment = AreaFragment()
+    }
+    private fun initAnimation() {
+        fragmentSwitchAnimation = AnimationUtils.loadAnimation(context,R.anim.control_fragment_switch)
     }
     private fun initBottomNavigationView(){
         navigationView.setOnNavigationItemSelectedListener { it ->
@@ -56,6 +68,7 @@ class ControlActivity:BaseActivity(){
                 }
             }
             if (newFragmentPageName != currentFragmentPage){
+                fragmentLayout.startAnimation(fragmentSwitchAnimation)//动画
                 currentFragmentPage = newFragmentPageName
                 when(currentFragmentPage){
                     FRAGMENT_NAME.INDEX -> {
@@ -84,6 +97,30 @@ class ControlActivity:BaseActivity(){
         //发送请求
         postEvent(GetDeviceListEvent(true))
         postEvent(GetAreaListEvent(true))
+        title = "智能灯光控制"
+    }
+
+    /**
+     *      菜单
+     */
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.control_menu,menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menuControlSetting ->{
+                startActivity(SettingActivity::class.java)
+            }
+            R.id.menuControlAbout ->{
+                startActivity(AboutActivity::class.java)
+            }
+            R.id.menuControlExit ->{
+                postEvent(CommandHelper.EXIT)
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     /**

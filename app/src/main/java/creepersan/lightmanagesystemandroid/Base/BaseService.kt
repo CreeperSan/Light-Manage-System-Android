@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Handler
 import android.os.IBinder
 import android.util.Log
+import creepersan.lightmanagesystemandroid.Helper.CommandHelper
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
@@ -43,7 +44,11 @@ open class BaseService:Service(){
     }
 
     @Subscribe
-    fun onStringCmdEvent(command:String){}
+    fun onStringCmdEvent(command:String){
+        if (command == CommandHelper.EXIT){
+            stopSelf()
+        }
+    }
     fun postEvent(event:Any){
         EventBus.getDefault().post(event)
     }

@@ -2,6 +2,7 @@ package creepersan.lightmanagesystemandroid.Fragment
 
 import android.graphics.Color
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -9,24 +10,25 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.TextView
 import creepersan.lightmanagesystemandroid.Activity.R
 import creepersan.lightmanagesystemandroid.Base.BaseCardFragment
 import creepersan.lightmanagesystemandroid.Component.CardComponent
 import creepersan.lightmanagesystemandroid.Component.CardItemComponent
-import creepersan.lightmanagesystemandroid.Event.GetAreaListEvent
-import creepersan.lightmanagesystemandroid.Event.GetAreaListResultEvent
+import creepersan.lightmanagesystemandroid.Event.*
 import creepersan.lightmanagesystemandroid.Item.Area
+import creepersan.lightmanagesystemandroid.Item.Device
 import org.greenrobot.eventbus.Subscribe
 
 class AreaFragment:BaseCardFragment(){
     private lateinit var areaCard:CardComponent
+    private var deviceList = ArrayList<Device>()
 
     override fun onViewInflated() {
         initCards()
         initFloatingButton()
         initSwipeRefreshLayout()
     }
-
 
     private fun initCards(){
         areaCard = CardComponent(activity)
@@ -37,12 +39,26 @@ class AreaFragment:BaseCardFragment(){
     private fun initFloatingButton() {
         setFloatingActionOnClickListener(View.OnClickListener { view ->
             val dialogView = LayoutInflater.from(activity).inflate(R.layout.dialog_area_add_content,null)
-            val areaName = dialogView.findViewById<EditText>(R.id.dialogAreaAddEditText)
-            val deviceList = dialogView.findViewById<RecyclerView>(R.id.dialogAreaAddRecyclerView)
-            deviceList.layoutManager = LinearLayoutManager(activity)
+            val areaNameEditText = dialogView.findViewById<EditText>(R.id.dialogAreaAddEditText)
+            val deviceListView = dialogView.findViewById<RecyclerView>(R.id.dialogAreaAddRecyclerView)
+            deviceListView.layoutManager = GridLayoutManager(activity,2)
+            setSelectedToDefault()
+            val deviceListAdapter = DeviceAdapter(deviceList)
+            deviceListView.adapter = deviceListAdapter
             val runnable = object : Runnable{
                 override fun run() {
-                    toast("区域名字")
+                    val areaName = areaNameEditText.text.toString()
+                    if (areaName == ""){
+                        toast("还没输入区域名字噢")
+                        return
+                    }
+                    val selectedDeviceList = ArrayList<Device>()
+                    for (device in deviceListAdapter.getData()){
+                        if (device.status)
+                            selectedDeviceList.add(device)
+                    }
+                    toast("已发送添加区域请求，设备总数 ${selectedDeviceList.size}")
+                    postEvent(AddAreaEvent(Area(areaName,selectedDeviceList)))
                 }
             }
             showDialog("添加区域",R.drawable.background_dialog_add_area,dialogView,runnable)
@@ -56,7 +72,22 @@ class AreaFragment:BaseCardFragment(){
         })
     }
 
-    @Subscribe()
+    private fun setSelectedToDefault(){
+        for (device in deviceList){
+            device.status = false
+        }
+    }
+
+    @Subscribe
+    fun onGetDeviceListResultEvent(event:GetDeviceListResultEvent){
+        if (event.isSuccess){
+            deviceList = event.deviceList
+        }else{
+            deviceList.clear()
+        }
+        setSelectedToDefault()
+    }
+    @Subscribe
     fun onGetAreaListResultEvent(event:GetAreaListResultEvent){
         setRefreshing(false)
         areaCard.clearCardItem()
@@ -65,8 +96,22 @@ class AreaFragment:BaseCardFragment(){
                 areaCard.hideEmptyHintTextView()
                 for (i in 0..event.areaList.size-1){
                     val area = event.areaList[i]
-                    val areaComponent = CardItemComponent(activity)
+                    val areaComponent = CardItemComponent(i,activity)
                     areaComponent.setTitle(area.areaName)
+                    areaComponent.setOnComponentLongClickListener(object :View.OnLongClickListener{
+
+                        override fun onLongClick(p0: View?): Boolean {
+                            val dialogView = LayoutInflater.from(activity).inflate(R.layout.dialog_public_delete,null)
+                            val dialogTextView = dialogView.findViewById<TextView>(R.id.dialogPublicDeleteText)
+                            dialogTextView.text = "确认删除 ${area.areaName} 吗？此操作不可恢复！"
+                            val dialogRunnable = Runnable {
+                                postEvent(RemoveAreaEvent(area))
+                            }
+                            showDialog("删除区域",R.drawable.background_dialog_remove,dialogView,dialogRunnable)
+                            return true
+                        }
+
+                    })
                     when(area.areaStatus){
                         Area.ON ->{
                             areaComponent.setSubTitle("已开启")
@@ -95,8 +140,35 @@ class AreaFragment:BaseCardFragment(){
             }
         }
     }
+    @Subscribe
+    fun onRemoveAreaResultEvent(event: RemoveAreaResultEvent){
+        if (event.isDeleted){
+            setRefreshing(true)
+            toast("区域已删除")
+            postEvent(GetAreaListEvent(true))
+        }else{
+            if (event.isConnected){
+                toast("提交区域删除请求失败，请检查设备状态")
+            }else{
+                toast("提交区域删除请求失败，请检查网络连接")
+            }
+        }
+    }
+    @Subscribe
+    fun onAddAreaResultEvent(event:AddAreaResultEvent){
+        if (event.isAdded){
+            setRefreshing(true)
+            toast("区域添加成功")
+            postEvent(GetAreaListEvent(true))
+        }else{
+            if (event.isConnected){
+                toast("添加失败，请检查设备状况")
+            }else{
+                toast("添加失败，请检查网络连接")
+            }
+        }
+    }
 
-    class DeviceItem(val deviceName:String,val deviceType:String,val pointInfo:String,val isChecck:Boolean)
     inner class DeviceHolder(checkBox: CheckBox) : RecyclerView.ViewHolder(checkBox) {
         val checkBox = itemView as CheckBox
 
@@ -108,8 +180,15 @@ class AreaFragment:BaseCardFragment(){
             checkBox.text = name
         }
     }
-    inner class DeviceAdapter : RecyclerView.Adapter<DeviceHolder>() {
-        private val deviceItemList = ArrayList<DeviceItem>()
+    inner class DeviceAdapter(list: ArrayList<Device>) : RecyclerView.Adapter<DeviceHolder>() {
+        private var deviceItemList = list
+
+        fun setData(list:ArrayList<Device>){
+            this.deviceItemList = deviceItemList
+        }
+        fun getData():ArrayList<Device>{
+            return deviceItemList
+        }
 
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): DeviceHolder {
             return DeviceHolder(CheckBox(activity))
@@ -120,11 +199,14 @@ class AreaFragment:BaseCardFragment(){
         }
 
         override fun onBindViewHolder(holder: DeviceHolder, position: Int) {
-            holder.setChecked(deviceItemList[position].isChecck)
+            holder.setChecked(deviceItemList[position].status)
+            holder.checkBox.setOnCheckedChangeListener { compoundButton, b ->
+                deviceItemList[position].status = b
+            }
             holder.setName(deviceItemList[position].deviceName)
         }
 
-        fun addElement(deviceItem:DeviceItem){
+        fun addElement(deviceItem:Device){
             deviceItemList.add(deviceItem)
         }
         fun refreshList(){

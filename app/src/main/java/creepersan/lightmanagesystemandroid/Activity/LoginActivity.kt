@@ -10,8 +10,8 @@ import android.view.WindowManager
 import android.text.InputType
 import creepersan.lightmanagesystemandroid.Event.LoginEvent
 import creepersan.lightmanagesystemandroid.Event.LoginResultEvent
+import creepersan.lightmanagesystemandroid.Event.StringEvent
 import creepersan.lightmanagesystemandroid.Helper.SharePrefHelper
-import creepersan.lightmanagesystemandroid.Service.InfoService
 import creepersan.lightmanagesystemandroid.Service.NetworkService
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -23,7 +23,7 @@ class LoginActivity :BaseActivity(){
     @BindView(R.id.loginUserName)lateinit var userNameEditText:EditText
     @BindView(R.id.loginPassword)lateinit var passwordEditText:EditText
     @BindView(R.id.loginRememberMe)lateinit var rememberCheckBox:CheckBox
-    @BindView(R.id.loginForgetPassword)lateinit var forgetPaddwordTextView:TextView
+    @BindView(R.id.loginForgetPassword)lateinit var forgetPasswordTextView:TextView
     @BindView(R.id.loginLogin)lateinit var loginButton:Button
     @BindView(R.id.loginPasswordVisible)lateinit var passwordVisibleButton:ImageView
     @BindView(R.id.loginProgressBar)lateinit var progressBar:ProgressBar
@@ -35,7 +35,6 @@ class LoginActivity :BaseActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         startService(NetworkService::class.java)
-        startService(InfoService::class.java)
         val sharedHelper = SharePrefHelper.getInstance(context)
         if (supportActionBar!=null){
             supportActionBar!!.hide()
@@ -75,11 +74,15 @@ class LoginActivity :BaseActivity(){
             rememberCheckBox.isChecked = true
         }
         //忘记密码
-        forgetPaddwordTextView.setOnClickListener {
+        forgetPasswordTextView.setOnClickListener {
             toast("忘记密码了？找党员啊")
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun on(event:StringEvent){
+        userNameEditText.setText(event.string)
+    }
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onLoginResultEvent(event:LoginResultEvent){
         if (event.isConnected){
@@ -93,7 +96,7 @@ class LoginActivity :BaseActivity(){
                     startActivity(ControlActivity::class.java,true)
                 }
             }else{
-                toast("英户名或者密码错误")
+                toast("用户名或者密码错误")
                 hideProgressBar()
             }
         }else{
