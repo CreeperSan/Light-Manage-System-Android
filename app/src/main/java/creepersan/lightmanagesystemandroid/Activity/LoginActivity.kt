@@ -81,7 +81,7 @@ class LoginActivity :BaseActivity(){
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun on(event:StringEvent){
-        userNameEditText.setText(event.string)
+//        userNameEditText.setText(event.string)
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onLoginResultEvent(event:LoginResultEvent){

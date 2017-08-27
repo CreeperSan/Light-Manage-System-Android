@@ -1,5 +1,6 @@
 package creepersan.lightmanagesystemandroid.Service
 
+import android.widget.Toast
 import creepersan.lightmanagesystemandroid.Base.BaseService
 import creepersan.lightmanagesystemandroid.Callback.StringCallback
 import creepersan.lightmanagesystemandroid.Decoder.*
@@ -16,7 +17,7 @@ import kotlin.collections.ArrayList
 
 class NetworkService:BaseService(){
     val httpClient = OkHttpClient.Builder().connectTimeout(5,TimeUnit.SECONDS).readTimeout(5,TimeUnit.SECONDS).build()
-    val isDebugging = false  //是否为调试的关键标志
+    val isDebugging = true  //是否为调试的关键标志
 
     /**
      *      EventBus
