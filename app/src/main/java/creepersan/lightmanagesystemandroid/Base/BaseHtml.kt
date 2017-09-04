@@ -1,5 +1,7 @@
 package creepersan.lightmanagesystemandroid.Base
 
+import android.util.Log
+
 abstract class BaseHtml(val srcString:String){
 
     init {
@@ -7,5 +9,6 @@ abstract class BaseHtml(val srcString:String){
     }
 
     abstract fun decodeString(srcString: String)
+    protected fun log(content:String) = Log.i(javaClass.simpleName,content)
 
 }

@@ -1,6 +1,5 @@
 package creepersan.lightmanagesystemandroid.Item
 
-class Device(var deviceName:String,var deviceType:String,var pointInfo:String,var status:Boolean)
 class Area{
     lateinit var areaName:String
     lateinit var deviceList:ArrayList<Device>

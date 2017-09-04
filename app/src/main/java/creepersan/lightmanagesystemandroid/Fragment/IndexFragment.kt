@@ -41,7 +41,7 @@ class IndexFragment :BaseCardFragment(){
         })
     }
 
-    @Subscribe()
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onGetDeviceListResultEvent(event:GetDeviceListResultEvent){
         setRefreshing(false)
         deviceStateCard.clearCardItem()
@@ -53,9 +53,9 @@ class IndexFragment :BaseCardFragment(){
         for (i in 0..event.deviceList.size-1){
             val device = event.deviceList[i]
             val cardStatusItem = CardStatusComponent(activity)
-            cardStatusItem.setTitleText(device.deviceName)
-            cardStatusItem.setSubTitleText("${device.pointInfo} ( ${device.deviceType} )")
-            if (device.status){
+            cardStatusItem.setTitleText(device.name)
+            cardStatusItem.setSubTitleText("${device.node} ( ${device.type} )")
+            if (true){
                 cardStatusItem.setStatusImageRes(R.drawable.ic_status_online)
             }else{
                 cardStatusItem.setStatusImageRes(R.drawable.ic_status_offline)
@@ -63,7 +63,7 @@ class IndexFragment :BaseCardFragment(){
             deviceStateCard.addCardItem(cardStatusItem)
         }
     }
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onGetAreaListEvent(event:GetAreaListResultEvent){
         areaStateCard.clearCardItem()
         if (event.isSuccess){

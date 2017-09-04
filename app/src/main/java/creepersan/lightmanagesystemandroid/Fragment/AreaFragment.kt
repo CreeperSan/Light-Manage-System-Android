@@ -19,6 +19,7 @@ import creepersan.lightmanagesystemandroid.Event.*
 import creepersan.lightmanagesystemandroid.Item.Area
 import creepersan.lightmanagesystemandroid.Item.Device
 import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class AreaFragment:BaseCardFragment(){
     private lateinit var areaCard:CardComponent
@@ -54,7 +55,7 @@ class AreaFragment:BaseCardFragment(){
                     }
                     val selectedDeviceList = ArrayList<Device>()
                     for (device in deviceListAdapter.getData()){
-                        if (device.status)
+                        if (true)
                             selectedDeviceList.add(device)
                     }
                     toast("已发送添加区域请求，设备总数 ${selectedDeviceList.size}")
@@ -73,9 +74,7 @@ class AreaFragment:BaseCardFragment(){
     }
 
     private fun setSelectedToDefault(){
-        for (device in deviceList){
-            device.status = false
-        }
+
     }
 
     @Subscribe
@@ -87,7 +86,7 @@ class AreaFragment:BaseCardFragment(){
         }
         setSelectedToDefault()
     }
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onGetAreaListResultEvent(event:GetAreaListResultEvent){
         setRefreshing(false)
         areaCard.clearCardItem()
@@ -199,11 +198,8 @@ class AreaFragment:BaseCardFragment(){
         }
 
         override fun onBindViewHolder(holder: DeviceHolder, position: Int) {
-            holder.setChecked(deviceItemList[position].status)
-            holder.checkBox.setOnCheckedChangeListener { compoundButton, b ->
-                deviceItemList[position].status = b
-            }
-            holder.setName(deviceItemList[position].deviceName)
+            holder.setChecked(true)
+            holder.setName(deviceItemList[position].name)
         }
 
         fun addElement(deviceItem:Device){

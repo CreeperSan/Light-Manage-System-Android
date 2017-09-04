@@ -21,7 +21,7 @@ class CardItemComponent(private var position:Int,context: Context):BaseComponent
     @BindView(R.id.cardItemComponentRoot)lateinit var cardView:RelativeLayout
 
     override fun getLayoutID(): Int = R.layout.component_card_item
-    private var device = Device("","","",false)
+    private var device = Device("","","")
     private var area = Area("", ArrayList(),Area.OFF)
 
     fun getDevice():Device = device

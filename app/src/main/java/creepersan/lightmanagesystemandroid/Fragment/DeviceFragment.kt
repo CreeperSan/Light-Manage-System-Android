@@ -53,7 +53,7 @@ class DeviceFragment:BaseCardFragment(){
                 if (deviceName=="" || deviceType=="" || pointInfo==""){
                     toast("设备信息输入不完整")
                 }else{
-                    postEvent(AddDeviceEvent(Device(deviceName,deviceType,pointInfo,false)))
+                    postEvent(AddDeviceEvent(Device(deviceName,deviceType,pointInfo)))
                     toast("已发送设备添加请求")
                 }
             }
@@ -68,52 +68,52 @@ class DeviceFragment:BaseCardFragment(){
         })
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onGetDeviceListResultEvent(event:GetDeviceListResultEvent){
-        setRefreshing(false)
-        normalDeviceCard.clearCardItem()
-        normalCardItemComponentList.clear()
-        if (event.isSuccess){
-            for (i in 0..event.deviceList.size-1){
-                val device = event.deviceList[i]
-                val cardItemComponent = CardItemComponent(i,activity)
-                cardItemComponent.setDevice(device)
-                cardItemComponent.setTitle(device.deviceName)
-                cardItemComponent.setSubTitle("${device.pointInfo} ( ${device.deviceType} )")
-                cardItemComponent.setSwitch(device.status)
-                cardItemComponent.setOnComponentLongClickListener(object : View.OnLongClickListener {
-                    override fun onLongClick(p0: View?): Boolean {
-                        val view:View = LayoutInflater.from(activity).inflate(R.layout.dialog_public_delete,null)
-                        val textView = view.findViewById<TextView>(R.id.dialogPublicDeleteText)
-                        textView.text = "确认删除 ${event.deviceList[cardItemComponent.getPosition()].deviceName} ？此操作不可恢复！"
-                        val runnable = Runnable {
-                            val deviceRemove = event.deviceList[cardItemComponent.getPosition()]
-                            postEvent(RemoveDeviceEvent(deviceRemove))
-                            toast("正在提交删除设备请求")
+            setRefreshing(false)
+            normalDeviceCard.clearCardItem()
+            normalCardItemComponentList.clear()
+            if (event.isSuccess){
+                log("大小为 : "+event.deviceList.size)
+                for (i in 0..event.deviceList.size-1){
+                    val device = event.deviceList[i]
+                    val cardItemComponent = CardItemComponent(i,activity)
+                    cardItemComponent.setDevice(device)
+                    cardItemComponent.setTitle(device.name)
+                    cardItemComponent.setSubTitle("${device.node} ( ${device.type} )")
+                    cardItemComponent.setOnComponentLongClickListener(object : View.OnLongClickListener {
+                        override fun onLongClick(p0: View?): Boolean {
+                            val view:View = LayoutInflater.from(activity).inflate(R.layout.dialog_public_delete,null)
+                            val textView = view.findViewById<TextView>(R.id.dialogPublicDeleteText)
+                            textView.text = "确认删除 ${event.deviceList[cardItemComponent.getPosition()].name} ？此操作不可恢复！"
+                            val runnable = Runnable {
+                                val deviceRemove = event.deviceList[cardItemComponent.getPosition()]
+                                postEvent(RemoveDeviceEvent(deviceRemove))
+                                toast("正在提交删除设备请求")
+                            }
+                            showDialog("删除设备",R.drawable.background_dialog_remove,view,runnable)
+                            return true
                         }
-                        showDialog("删除设备",R.drawable.background_dialog_remove,view,runnable)
-                        return true
-                    }
-                })
-                cardItemComponent.setOnSwitchListener(CompoundButton.OnCheckedChangeListener { compoundButton, b ->
-                    toast("改变了")
-                })
-                cardItemComponent.setOnSwitchListener(CompoundButton.OnCheckedChangeListener { compoundButton, b ->
-                    cardItemComponent.setSwitchHandleState(true)
-                    postEvent(DeviceSwitchEvent(device,b))
-                })
-                normalCardItemComponentList.add(cardItemComponent)
-                normalDeviceCard.addCardItem(cardItemComponent)
-            }
-            normalDeviceCard.hideEmptyHintTextView()
-        }else{
-            normalDeviceCard.showEmptyHintTextView()
-            if (event.isConnected){
-                toast("获取设备列表失败，请检查网络连接")
+                    })
+                    cardItemComponent.setOnSwitchListener(CompoundButton.OnCheckedChangeListener { compoundButton, b ->
+                        toast("改变了")
+                    })
+                    cardItemComponent.setOnSwitchListener(CompoundButton.OnCheckedChangeListener { compoundButton, b ->
+                        cardItemComponent.setSwitchHandleState(true)
+                        postEvent(DeviceSwitchEvent(device,b))
+                    })
+                    normalCardItemComponentList.add(cardItemComponent)
+                    normalDeviceCard.addCardItem(cardItemComponent)
+                }
+                normalDeviceCard.hideEmptyHintTextView()
             }else{
-                toast("获取设备列表超时，请检查你的网络连接并重试")
+                normalDeviceCard.showEmptyHintTextView()
+                if (event.isConnected){
+                    toast("获取设备列表失败，请检查网络连接")
+                }else{
+                    toast("获取设备列表超时，请检查你的网络连接并重试")
+                }
             }
-        }
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onDeviceRemoveResultEvent(event: RemoveDeviceResultEvent){
@@ -140,14 +140,14 @@ class DeviceFragment:BaseCardFragment(){
         val deviceEvent = event.device
         if (event.isSuccess){
             for (cardItem in normalCardItemComponentList){
-                if (cardItem.getDevice().pointInfo == deviceEvent.pointInfo){
+                if (cardItem.getDevice().node == deviceEvent.node){
                     cardItem.setSwitchHandleState(false)
                     cardItem.setSwitch(event.newState)
                 }
             }
         }else{
             for (cardItem in normalCardItemComponentList){
-                if (cardItem.getDevice().pointInfo == deviceEvent.pointInfo){
+                if (cardItem.getDevice().node == deviceEvent.node){
                     cardItem.setSwitchHandleState(false)
                     cardItem.setSwitch(!event.newState)
                 }

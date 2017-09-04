@@ -96,7 +96,7 @@ class ControlActivity:BaseActivity(){
         navigationView.bringToFront()
         //发送请求
         postEvent(GetDeviceListEvent(true))
-        postEvent(GetAreaListEvent(true))
+//        postEvent(GetAreaListEvent(true))//发送区域请求就不用了
         title = "智能灯光控制"
     }
 
