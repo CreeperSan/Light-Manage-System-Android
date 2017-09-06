@@ -5,6 +5,7 @@ import creepersan.lightmanagesystemandroid.Base.BaseService
 import creepersan.lightmanagesystemandroid.Callback.StringCallback
 import creepersan.lightmanagesystemandroid.Decoder.*
 import creepersan.lightmanagesystemandroid.Event.*
+import creepersan.lightmanagesystemandroid.Helper.DatabaseHelper
 import creepersan.lightmanagesystemandroid.Helper.UrlHelper
 import creepersan.lightmanagesystemandroid.Item.Area
 import creepersan.lightmanagesystemandroid.Item.Device
@@ -90,7 +91,6 @@ class NetworkService:BaseService(){
     }
     @Subscribe      //刷新区域请求
     fun onGetAreaListEvent(event:GetAreaListEvent){
-        if (event!=null)return
         if(event.isForceRefresh){//如果是强制刷新
             if (isDebugging){//模拟数据
                 val random = Random()
@@ -101,20 +101,13 @@ class NetworkService:BaseService(){
                         val device = Device("灯光设备 #${random.nextInt(99)}","控制设备","节点 #${random.nextInt(50)}")
                         deviceList.add(device)
                     }
-                    val area = Area("区域 #${random.nextInt(20)}",deviceList,random.nextInt(3))
-                    areaList.add(area)
+//                    val area = Area("区域 #${random.nextInt(20)}",deviceList,random.nextInt(3))
+//                    areaList.add(area)
                 }
                 postEventDelay(GetAreaListResultEvent(true,true,areaList),500)
             }else{//真实请求
-                request(UrlHelper.getAreaStatusUrl(),object : StringCallback(){
-                    override fun onResponse(call: Call, response: Response, result: String) {
-                        val areaHtml = AreaListHtml(result)
-                        postEvent(GetAreaListResultEvent(areaHtml.isSuccess(),true,areaHtml.getAreaList()))
-                    }
-                    override fun onFailure(call: Call?, e: IOException?) {
-                        postEvent(GetAreaListResultEvent(false,false, ArrayList()))
-                    }
-                })
+                log("已发送请求")
+                postStickEvent(GetAreaListResultEvent(true,true,DatabaseHelper.Instance.getInstance(this).getAreaList()))
             }
         }
     }
@@ -185,19 +178,8 @@ class NetworkService:BaseService(){
         if(isDebugging){
             postEventDelay(AddAreaResultEvent(true,true),800)
         }else{
-            request(UrlHelper.getAreaAddUrl(),object : StringCallback(){
-                override fun onFailure(call: Call?, e: IOException?) {
-                    postEvent(AddAreaResultEvent(false,false))
-                }
-                override fun onResponse(call: Call, response: Response, result: String) {
-                    val addAreaHtml = AreaAddHtml(result)
-                    if (addAreaHtml.isSuccess()){
-                        postEvent(AddAreaResultEvent(true,true))
-                    }else{
-                        postEvent(AddAreaResultEvent(false,false))
-                    }
-                }
-            })
+            DatabaseHelper.Instance.getInstance(this).insertArea(event.area)
+            postEvent(AddAreaResultEvent(true,true))
         }
     }
     @Subscribe      //删除区域请求

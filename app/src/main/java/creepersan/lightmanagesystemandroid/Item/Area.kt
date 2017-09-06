@@ -1,6 +1,8 @@
 package creepersan.lightmanagesystemandroid.Item
 
-class Area1(var name: String, addTime: Long) {
+import java.io.Serializable
+
+class Area(var name: String, addTime: Long) :Serializable{
     var id:Long = addTime
         private set
     var deviceList = ArrayList<String>()

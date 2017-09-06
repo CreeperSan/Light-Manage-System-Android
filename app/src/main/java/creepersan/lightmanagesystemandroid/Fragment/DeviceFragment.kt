@@ -1,5 +1,6 @@
 package creepersan.lightmanagesystemandroid.Fragment
 
+import android.content.Intent
 import android.graphics.Color
 import android.support.v4.widget.SwipeRefreshLayout
 import android.view.LayoutInflater
@@ -7,6 +8,7 @@ import android.view.View
 import android.widget.CompoundButton
 import android.widget.EditText
 import android.widget.TextView
+import creepersan.lightmanagesystemandroid.Activity.AreaControlActivity
 import creepersan.lightmanagesystemandroid.Activity.R
 import creepersan.lightmanagesystemandroid.Base.BaseCardFragment
 import creepersan.lightmanagesystemandroid.Component.CardComponent
@@ -25,8 +27,9 @@ class DeviceFragment:BaseCardFragment(){
 
     override fun onViewInflated() {
         initCards()
-        initFloatingButton()
         initSwipeRefreshLayout()
+        initFloatingButton()
+        postEvent(GetDeviceListEvent(true))
     }
 
     private fun initCards() {
@@ -44,21 +47,7 @@ class DeviceFragment:BaseCardFragment(){
         addComponent(otherDeviceCard)
     }
     private fun initFloatingButton() {
-        setFloatingActionOnClickListener(View.OnClickListener { view ->
-            val dialogView = LayoutInflater.from(activity).inflate(R.layout.dialog_device_add_content,null)
-            val dialogRunnable = Runnable {
-                val deviceName = dialogView.findViewById<EditText>(R.id.dialogDeviceAddDeviceName).text.toString().trim()
-                val deviceType = dialogView.findViewById<EditText>(R.id.dialogDeviceAddDeviceType).text.toString().trim()
-                val pointInfo = dialogView.findViewById<EditText>(R.id.dialogDeviceAddPointInfo).text.toString().trim()
-                if (deviceName=="" || deviceType=="" || pointInfo==""){
-                    toast("设备信息输入不完整")
-                }else{
-                    postEvent(AddDeviceEvent(Device(deviceName,deviceType,pointInfo)))
-                    toast("已发送设备添加请求")
-                }
-            }
-            showDialog("设备添加", R.drawable.background_dialog_add_device,dialogView,dialogRunnable)
-        })
+        hideFloatingButton()
     }
     private fun initSwipeRefreshLayout() {
         setRefreshColor(Color.parseColor("#9C27B0"))
@@ -81,20 +70,6 @@ class DeviceFragment:BaseCardFragment(){
                     cardItemComponent.setDevice(device)
                     cardItemComponent.setTitle(device.name)
                     cardItemComponent.setSubTitle("${device.node} ( ${device.type} )")
-                    cardItemComponent.setOnComponentLongClickListener(object : View.OnLongClickListener {
-                        override fun onLongClick(p0: View?): Boolean {
-                            val view:View = LayoutInflater.from(activity).inflate(R.layout.dialog_public_delete,null)
-                            val textView = view.findViewById<TextView>(R.id.dialogPublicDeleteText)
-                            textView.text = "确认删除 ${event.deviceList[cardItemComponent.getPosition()].name} ？此操作不可恢复！"
-                            val runnable = Runnable {
-                                val deviceRemove = event.deviceList[cardItemComponent.getPosition()]
-                                postEvent(RemoveDeviceEvent(deviceRemove))
-                                toast("正在提交删除设备请求")
-                            }
-                            showDialog("删除设备",R.drawable.background_dialog_remove,view,runnable)
-                            return true
-                        }
-                    })
                     cardItemComponent.setOnSwitchListener(CompoundButton.OnCheckedChangeListener { compoundButton, b ->
                         toast("改变了")
                     })

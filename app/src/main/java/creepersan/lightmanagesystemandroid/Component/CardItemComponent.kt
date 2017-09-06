@@ -22,7 +22,7 @@ class CardItemComponent(private var position:Int,context: Context):BaseComponent
 
     override fun getLayoutID(): Int = R.layout.component_card_item
     private var device = Device("","","")
-    private var area = Area("", ArrayList(),Area.OFF)
+    private var area = Area("",0)
 
     fun getDevice():Device = device
     fun getArea():Area = area

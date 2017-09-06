@@ -52,6 +52,9 @@ open class BaseService:Service(){
     fun postEvent(event:Any){
         EventBus.getDefault().post(event)
     }
+    fun postStickEvent(event: Any){
+        EventBus.getDefault().postSticky(event)
+    }
     fun postEventDelay(event: Any,delay:Long){
         handler.postDelayed({
             postEvent(event)

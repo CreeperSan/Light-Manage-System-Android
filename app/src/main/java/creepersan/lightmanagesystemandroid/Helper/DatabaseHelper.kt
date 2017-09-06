@@ -3,7 +3,7 @@ package creepersan.lightmanagesystemandroid.Helper
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
-import creepersan.lightmanagesystemandroid.Item.Area1
+import creepersan.lightmanagesystemandroid.Item.Area
 import creepersan.lightmanagesystemandroid.Item.Device
 
 class DatabaseHelper {
@@ -21,9 +21,9 @@ class DatabaseHelper {
         database.execSQL("CREATE TABLE IF NOT EXISTS ${KEY.TABLE_AREA}(${KEY.KEY_AREA_ID} TEXT NOT NULL," +
                 "${KEY.KEY_AREA_NAME} TEXT NOT NULL)")
         database.execSQL("CREATE TABLE IF NOT EXISTS ${KEY.TABLE_AREA_DEVICE}(${KEY.KEY_AREA_DEVICE_AREA_ID} TEXT NOT NULL," +
-                "${KEY.KEY_AREA_DEVICE_DEVICE_NODE} TEXT NOT NULL")
+                "${KEY.KEY_AREA_DEVICE_DEVICE_NODE} TEXT NOT NULL)")
         database.execSQL("CREATE TABLE IF NOT EXISTS ${KEY.TABLE_DEVICE_SUB_DEVICE}(${KEY.KEY_DEVICE_SUB_DEVICE_DEVICE} TEXT NOT NULL," +
-                "${KEY.KEY_DEVICE_SUB_DEVICE_SUB_DEVICE} TEXT NOT NULL")
+                "${KEY.KEY_DEVICE_SUB_DEVICE_SUB_DEVICE} TEXT NOT NULL)")
     }
 
     fun insertDevice(device1: Device){
@@ -55,26 +55,61 @@ class DatabaseHelper {
         database.update(KEY.TABLE_DEVICE,contentValue,"${KEY.KEY_DEVICE_NODE}=?", arrayOf(node))
     }
 
-    fun insertArea(id:Long,name:String){
+    fun getAreaList():ArrayList<Area>{
+        val dataList = ArrayList<Area>()
+        val cursor = database.query(KEY.TABLE_AREA,null,null,null,null,null,null)
+        while (cursor.moveToNext()){
+            try {
+                val name = cursor.getString(cursor.getColumnIndex(KEY.KEY_AREA_NAME))
+                val id = cursor.getString(cursor.getColumnIndex(KEY.KEY_AREA_ID)).toLong()
+                val areaTemp = Area(name,id.toLong())
+                val cursorAreaDevice = database.query(KEY.TABLE_AREA_DEVICE,null,"${KEY.KEY_AREA_DEVICE_AREA_ID} = ?", arrayOf(id.toString()),null,null,null)
+                while (cursorAreaDevice.moveToNext()){
+                    val deviceID = cursorAreaDevice.getString(cursorAreaDevice.getColumnIndex(KEY.KEY_AREA_DEVICE_DEVICE_NODE))
+                    areaTemp.addDevice(deviceID)
+                }
+                cursorAreaDevice.close()
+                dataList.add(areaTemp)
+            } catch (e: Exception) {
+                continue
+            }
+        }
+        cursor.close()
+        return dataList
+    }
+    fun insertArea(id:Long,name:String,deviceList:ArrayList<String>){
         val contentValue = ContentValues()
         contentValue.put(KEY.KEY_AREA_ID,id)
         contentValue.put(KEY.KEY_AREA_NAME,name)
         database.insert(KEY.TABLE_AREA,null,contentValue)
+        //添加绑定信息
+        if (deviceList.size>0){
+            for (deviceID in deviceList){
+                val areaDeviceContentValue = ContentValues()
+                areaDeviceContentValue.put(KEY.KEY_AREA_DEVICE_AREA_ID,id.toString())
+                areaDeviceContentValue.put(KEY.KEY_AREA_DEVICE_DEVICE_NODE,deviceID)
+                database.insert(KEY.TABLE_AREA_DEVICE,null,areaDeviceContentValue)
+            }
+        }
     }
-    fun insertArea(area: Area1){
-        insertArea(area.id,area.name)
+    fun insertArea(area: Area){
+        insertArea(area.id,area.name,area.deviceList)
     }
-    fun deleteArea(area:Area1){
+    fun deleteArea(area:Area){
         deleteArea(area.name)
     }
     fun deleteArea(id:String){
-
+        database.delete(KEY.TABLE_AREA,"${KEY.KEY_AREA_ID}=?", arrayOf(id))
+        database.delete(KEY.TABLE_AREA_DEVICE,"${KEY.KEY_AREA_DEVICE_AREA_ID} = ?", arrayOf(id))
     }
-    fun updateArea(area:Area1){
+    fun updateArea(area:Area){
         updateArea(area.id,area.name)
     }
     fun updateArea(id:Long,name:String){
-
+        val contentValue = ContentValues()
+        contentValue.put(KEY.KEY_AREA_ID,id)
+        contentValue.put(KEY.KEY_AREA_NAME,name)
+        database.update(KEY.TABLE_AREA,contentValue,"${KEY.KEY_AREA_ID}=?", arrayOf(id.toString()))
     }
 
     //todo 还得完善区域数据库的删改除查
@@ -83,8 +118,8 @@ class DatabaseHelper {
 
     //TODO 完善设备绑定信息表的增删改查
 
-    private object Instance{
-        var databaseHelper:DatabaseHelper? = null
+    object Instance{
+        private var databaseHelper:DatabaseHelper? = null
 
         fun getInstance(context:Context):DatabaseHelper{
             if (databaseHelper==null){

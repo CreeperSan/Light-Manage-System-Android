@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="56dp">
+
+    <ImageView
+        android:id="@+id/itemDeviceControlTypeImage"
+        android:padding="8dp"
+        android:src="@drawable/ic_visibility_black"
+        android:layout_alignParentStart="true"
+        android:layout_width="56dp"
+        android:layout_height="56dp" />
+
+    <LinearLayout
+        android:padding="8dp"
+        android:layout_marginStart="4dp"
+        android:orientation="vertical"
+        android:layout_toEndOf="@id/itemDeviceControlTypeImage"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+        <TextView
+            android:text="Test"
+            android:textSize="16sp"
+            android:textColor="#333333"
+            android:id="@+id/itemDeviceControlTitle"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp" />
+        <TextView
+            android:text="SubTest"
+            android:textColor="#999999"
+            android:id="@+id/itemDeviceControlSubtitle"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp" />
+    </LinearLayout>
+
+    <Switch
+        android:id="@+id/itemDeviceControlSwitch"
+        android:layout_marginEnd="16dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <ImageView
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:layout_toStartOf="@id/itemDeviceControlSwitch"
+        android:id="@+id/itemDeviceControlBrightness"
+        android:src="@drawable/ic_extension_black"
+        android:layout_marginEnd="16dp"
+        android:layout_centerVertical="true"
+        android:layout_width="42dp"
+        android:layout_height="42dp" />
+
+    <ImageView
+        android:foreground="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:src="@drawable/ic_visibility_black"
+        android:layout_marginEnd="8dp"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@id/itemDeviceControlBrightness"
+        android:id="@+id/itemDeviceControlBind"
+        android:layout_width="42dp"
+        android:layout_height="42dp" />
+
+</RelativeLayout>

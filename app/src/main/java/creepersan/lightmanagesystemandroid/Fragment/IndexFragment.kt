@@ -71,21 +71,7 @@ class IndexFragment :BaseCardFragment(){
                 for (i in 0..event.areaList.size-1){
                     val area = event.areaList[i]
                     val areaStatusComponent = CardStatusComponent(activity)
-                    areaStatusComponent.setTitleText(area.areaName)
-                    when(area.areaStatus){
-                        Area.ON -> {
-                            areaStatusComponent.setSubTitleText("已开启")
-                            areaStatusComponent.setStatusImageRes(R.drawable.ic_status_online)
-                        }
-                        Area.OFF -> {
-                            areaStatusComponent.setSubTitleText("已关闭")
-                            areaStatusComponent.setStatusImageRes(R.drawable.ic_status_offline)
-                        }
-                        Area.PARTLY_ON -> {
-                            areaStatusComponent.setSubTitleText("部分开启")
-                            areaStatusComponent.setStatusImageRes(R.drawable.ic_status_other)
-                        }
-                    }
+                    areaStatusComponent.setTitleText(area.name)
                     areaStateCard.addCardItem(areaStatusComponent)
                 }
             }else{
