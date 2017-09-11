@@ -55,6 +55,9 @@ class DatabaseHelper {
         database.update(KEY.TABLE_DEVICE,contentValue,"${KEY.KEY_DEVICE_NODE}=?", arrayOf(node))
     }
 
+    /**
+     *  区域部分
+     */
     fun getAreaList():ArrayList<Area>{
         val dataList = ArrayList<Area>()
         val cursor = database.query(KEY.TABLE_AREA,null,null,null,null,null,null)
@@ -96,7 +99,7 @@ class DatabaseHelper {
         insertArea(area.id,area.name,area.deviceList)
     }
     fun deleteArea(area:Area){
-        deleteArea(area.name)
+        deleteArea(area.id.toString())
     }
     fun deleteArea(id:String){
         database.delete(KEY.TABLE_AREA,"${KEY.KEY_AREA_ID}=?", arrayOf(id))
@@ -112,8 +115,49 @@ class DatabaseHelper {
         database.update(KEY.TABLE_AREA,contentValue,"${KEY.KEY_AREA_ID}=?", arrayOf(id.toString()))
     }
 
+    fun getAreaDevice(area: Area):ArrayList<Device>{
+        var arrayList = ArrayList<Device>()
+        val cursor = database.query(KEY.TABLE_AREA_DEVICE,null,"${KEY.KEY_AREA_DEVICE_AREA_ID} = ?", arrayOf(area.id.toString()),null,null,null)
+        while (cursor.moveToNext()){
+            val node = cursor.getString(cursor.getColumnIndex(KEY.KEY_AREA_DEVICE_DEVICE_NODE))
+            val cursorDevice = database.query(KEY.TABLE_DEVICE,null,"${KEY.KEY_DEVICE_NODE} = ?", arrayOf(node),null,null,null)
+            while (cursorDevice.moveToNext()){
+                val deviceName = cursorDevice.getString(cursorDevice.getColumnIndex(KEY.KEY_DEVICE_NAME))
+                val deviceType = cursorDevice.getInt(cursorDevice.getColumnIndex(KEY.KEY_DEVICE_TYPE))
+                val deviceParams = cursorDevice.getString(cursorDevice.getColumnIndex(KEY.KEY_DEVICE_PARAMS))
+                val deviceTemp = Device(node,deviceName,true)
+                deviceTemp.type = deviceType
+                deviceTemp.params = deviceParams
+                arrayList.add(deviceTemp)
+            }
+        }
+        cursor.close()
+        return arrayList
+    }
     //todo 还得完善区域数据库的删改除查
 
+    /**
+     *      区域设备表
+     */
+    fun bindAreaDevice(areaID:String,deviceID:String){
+        val contentValue = ContentValues();
+        contentValue.put(KEY.KEY_AREA_DEVICE_DEVICE_NODE,deviceID)
+        contentValue.put(KEY.KEY_AREA_DEVICE_AREA_ID,areaID)
+        database.insert(KEY.TABLE_AREA_DEVICE,null,contentValue)
+    }
+    fun getAreaDeviceList(areaID:String):ArrayList<String>{
+        var arrayList = ArrayList<String>()
+        val cursor = database.query(KEY.TABLE_AREA_DEVICE,null,"${KEY.KEY_AREA_DEVICE_AREA_ID} = ?", arrayOf(areaID),null,null,null)
+        while (cursor.moveToNext()){
+            val deviceID = cursor.getString(cursor.getColumnIndex(KEY.KEY_AREA_DEVICE_DEVICE_NODE))
+            arrayList.add(deviceID)
+        }
+        cursor.close()
+        return arrayList
+    }
+    fun deleteAreaDeviceList(areaID: String){
+        database.delete(KEY.TABLE_AREA_DEVICE,"${KEY.KEY_AREA_DEVICE_AREA_ID} = ?", arrayOf(areaID))
+    }
     //todo 完善区域设备表的增删改除查
 
     //TODO 完善设备绑定信息表的增删改查

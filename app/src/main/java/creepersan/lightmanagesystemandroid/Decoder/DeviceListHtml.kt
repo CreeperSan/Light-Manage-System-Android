@@ -12,7 +12,7 @@ class DeviceListHtml(srcString: String):BaseHtml(srcString){
     private var isSuccess = false
 
     override fun decodeString(srcString: String) {
-//        log("收到的消息为\n$srcString")
+        log("收到的消息为\n$srcString")
         deviceList = ArrayList<Device>()
         val newString = String(srcString.toByteArray(), Charset.forName("UTF-8"))
         try {
@@ -23,8 +23,9 @@ class DeviceListHtml(srcString: String):BaseHtml(srcString){
                 val name = sensorJson.optString(KEY.SENSOR_NAME)
                 val subDevice = sensorJson.optString(KEY.SENSOR_BIND_DEVICE)
                 val deviceID = sensorJson.optString(KEY.SENSOR_DEVICE_ID)
-                val device = Device(deviceID,name, Device.VALUE.USELESS)
-                device.addSubDevice(subDevice)
+                val device = Device(deviceID,name, true)
+//                device.addSubDevice(subDevice)//子设备列表，弃用
+                device.subDevice = subDevice
                 device.type = Device.TYPE.SENSOR
                 deviceList.add(device)
             }
@@ -39,14 +40,14 @@ class DeviceListHtml(srcString: String):BaseHtml(srcString){
                 val bright = lightJson.optString(KEY.LIGHT_BRIGHT)
                 val swSta = lightJson.optString(KEY.LIGHT_SW_STA)
                 val deviceID = lightJson.optString(KEY.LIGHT_DEVICE_ID)
-                val device = Device(deviceID,name, Device.VALUE.USELESS)
+                val device = Device(deviceID,name, true)
                 if (deviceID=="2" || deviceID=="7" || deviceID=="11"){
                     device.type = Device.TYPE.LIGHT_NORMAL
                 }else{
                     device.type = Device.TYPE.LIGHT_COLOR
                 }
-                device.params = bright
-                device.status = swSta
+                device.params = bright  //亮度
+                device.status = swSta   //是否打开
                 deviceList.add(device)
             }
             isSuccess = true
@@ -54,8 +55,8 @@ class DeviceListHtml(srcString: String):BaseHtml(srcString){
             isSuccess = false
             e.printStackTrace()
         }
-        log("解析完毕，总共有"+deviceList.size+"个设备加入列表")
-        log("是否成功：$isSuccess")
+//        log("解析完毕，总共有"+deviceList.size+"个设备加入列表")
+//        log("是否成功：$isSuccess")
         EventBus.getDefault().post(GetDeviceListResultEvent(this.isSuccess(),true,deviceList))//解析完成提交事件
     }
 

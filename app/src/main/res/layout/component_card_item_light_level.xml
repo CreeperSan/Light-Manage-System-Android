@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"
+    android:clickable="true"
+    android:id="@+id/cardItemComponentRoot"
+    android:background="?attr/selectableItemBackground"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <Spinner
+        android:id="@+id/cardItemLevelComponentSpinner"
+        android:paddingTop="4dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="6dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:entries="@array/lightLevel"
+        android:layout_width="96dp"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:background="@drawable/bg_spinner"
+        android:layout_alignTop="@id/cardItemLevelComponentSpinner"
+        android:layout_alignBottom="@id/cardItemLevelComponentSpinner"
+        android:layout_alignStart="@id/cardItemLevelComponentSpinner"
+        android:layout_alignEnd="@id/cardItemLevelComponentSpinner"
+        android:layout_width="96dp"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_toLeftOf="@id/cardItemLevelComponentSpinner"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/cardItemLevelComponentTitle"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            tools:text="客厅大灯"
+            android:lines="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/cardItemLevelComponentSubTitle"
+            android:layout_marginTop="4dp"
+            android:textSize="12sp"
+            android:textColor="#999999"
+            tools:text="SL_M_1 (灯光设备)"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</RelativeLayout>

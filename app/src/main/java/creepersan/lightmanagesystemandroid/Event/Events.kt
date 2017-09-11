@@ -32,5 +32,10 @@ class RemoveAreaResultEvent(val isDeleted:Boolean,var isConnected: Boolean)
 class AreaSwitchEvent(val area: Area,val newState:Boolean)
 class AreaSwitchResultEvent(val isSuccess: Boolean,val isConnected: Boolean,val current: Boolean,val area: Area)
 
+/**
+ *      设置一群设备状态
+ */
+class SetupDeviceStateEvent(var url:String)
+class SetupDeviceStateResultEvent(var result:Boolean)
 
 class StringEvent(val string: String)

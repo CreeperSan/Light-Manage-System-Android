@@ -17,6 +17,7 @@ import creepersan.lightmanagesystemandroid.Event.GetDeviceListResultEvent
 import creepersan.lightmanagesystemandroid.Item.Area
 import creepersan.lightmanagesystemandroid.Item.Device
 import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class AreaControlActivity : BaseActivity(){
     @BindView(R.id.areaControlRecyclerView)lateinit var recyclerView:RecyclerView
@@ -80,7 +81,7 @@ class AreaControlActivity : BaseActivity(){
 
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onGetDeviceListResultEvent(event:GetDeviceListResultEvent){
         deviceList = event.deviceList
         initLater()

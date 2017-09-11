@@ -8,6 +8,7 @@ class LoginHtml(srcString:String):BaseHtml(srcString){
 //        if (srcString.contains("admin") && srcString.contains("123456")){
 //            isSuccess = true
 //        }
+        log(srcString)
         if (srcString.contains("登录成功,点击进入主页界面")){
             isSuccess = true
         }

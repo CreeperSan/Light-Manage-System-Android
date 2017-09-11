@@ -22,6 +22,7 @@
         <activity android:name=".AboutActivity" android:screenOrientation="portrait"/>
         <activity android:name=".SettingActivity" android:screenOrientation="portrait"/>
         <activity android:name=".AreaControlActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ModeSetupActivity" android:screenOrientation="portrait"/>
 
         <service android:name="creepersan.lightmanagesystemandroid.Service.NetworkService"/>
 

@@ -11,8 +11,6 @@ import creepersan.lightmanagesystemandroid.Activity.R
 import creepersan.lightmanagesystemandroid.Base.BaseComponent
 import creepersan.lightmanagesystemandroid.Item.Area
 import creepersan.lightmanagesystemandroid.Item.Device
-import java.text.ParsePosition
-import java.util.ArrayList
 
 class CardItemComponent(private var position:Int,context: Context):BaseComponent(context){
     @BindView(R.id.cardItemComponentTitle)lateinit var titleTextView:TextView
@@ -21,7 +19,7 @@ class CardItemComponent(private var position:Int,context: Context):BaseComponent
     @BindView(R.id.cardItemComponentRoot)lateinit var cardView:RelativeLayout
 
     override fun getLayoutID(): Int = R.layout.component_card_item
-    private var device = Device("","","")
+    private var device = Device("","",true)
     private var area = Area("",0)
 
     fun getDevice():Device = device

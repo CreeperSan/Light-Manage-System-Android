@@ -2,19 +2,20 @@ package creepersan.lightmanagesystemandroid.Item
 
 class Device {
     var name = ""                   //设备名称
-    var isOnline = ""               //设备状态
+    var isOnline = true               //设备状态
     var type = TYPE.UNKNOWN         //设备类型
     var node = ""
         private set                   //节点信息
     var subDeviceList:ArrayList<String>? = null      //绑定的设备的节点集合
     var params = ""                  //各个设备的参数，得首先判断类型才能知道他的含义
     var status = ""                 //对应灯光设备的sw_sta字段
+    var subDevice = ""
 
     constructor(node:String){
         this.node = node
     }
 
-    constructor(node: String,name:String,isOnline:String){
+    constructor(node: String,name:String,isOnline:Boolean){
         this.node = node
         this.name = name
         this.isOnline = isOnline
